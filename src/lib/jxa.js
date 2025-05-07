@@ -6,7 +6,7 @@ import { logger } from './logger';
 /**
  * Checks if Music.app is running
  *
- * @returns {boolean} Returns true if Music.app is open, otherwise returns false.
+ * @returns {Promise<boolean>} A promise that returns true if Music.app is open, otherwise returns false.
  */
 export async function isMusicAppRunning() {
   try {
@@ -23,9 +23,21 @@ export async function isMusicAppRunning() {
 }
 
 /**
+ * @typedef {Object} CurrentTrack
+ * @property {number} id - The unique identifier for the current track.
+ * @property {Blob} artwork - A data blob representing the artwork of the current track.
+ * @property {string} title - The title of the current track.
+ * @property {string} artist - The artist of the current track.
+ * @property {string} album - The album of the current track.
+ * @property {boolean} favorited - Whether the current track is favorited.
+ * @property {number} duration - The duration (in seconds) of the current track.
+ * @property {number} position - The current playback position (in seconds) of the current track.
+ */
+
+/**
  * Fetches the currently playing track in Music.app
  *
- * @returns {object | null} The currently playing music track, if available
+ * @returns {Promise<CurrentTrack | null>} A promise that retrieves the currently playing music track, if available
  */
 export async function getCurrentTrack() {
   try {
