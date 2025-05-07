@@ -1,0 +1,10 @@
+{
+  "singleQuote": true,
+  "quoteProps": "consistent",
+  "tabWidth": 2,
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "binaryNextLine": true,
+  "importOrder": ["^@/(.*)$", "^[./]"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}

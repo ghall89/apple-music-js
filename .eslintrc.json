@@ -1,0 +1,17 @@
+{
+  "extends": ["prettier"],
+  "plugins": ["unused-imports"],
+  "rules": {
+    "max-len": [
+      "warn",
+      {
+        "code": 125,
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true
+      }
+    ],
+    "operator-linebreak": "off",
+    "no-console": "error"
+  }
+}
