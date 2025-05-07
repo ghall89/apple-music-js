@@ -3,9 +3,24 @@ import { run } from "@jxa/run";
 import { AppleMusicTrack } from "./types.js";
 
 /**
- * Fetches the currently playing track in Apple Music
+ * Checks if Music.app is running
  *
- * @returns
+ * @returns {bool}
+ */
+export async function isMusicAppRunning(): Promise<boolean> {
+  const result = (await run(() => {
+    const Music = Application("Music");
+    return Music.running();
+  })) as boolean;
+
+  console.log(`Music.app is running: ${result}`);
+  return result;
+}
+
+/**
+ * Fetches the currently playing track in Music.app
+ *
+ * @returns {AppleMusicTrack}
  */
 export async function getCurrentTrack(): Promise<AppleMusicTrack | null> {
   const result = (await run(() => {
