@@ -1,4 +1,3 @@
-import '@jxa/global-type';
 import { run } from '@jxa/run';
 
 import { logger } from './logger';
@@ -23,6 +22,25 @@ export async function isMusicAppRunning() {
 }
 
 /**
+ * Launches Music.app if its not already running.
+ *
+ * @returns {Promise<void>}
+ */
+export async function launchMusicApp() {
+  try {
+    if (!isMusicAppRunning()) {
+      await run(() => {
+        const Music = Application('Music');
+        Music.open();
+      });
+    }
+  } catch (err) {
+    logger.error(err);
+    throw err;
+  }
+}
+
+/**
  * @typedef {Object} CurrentTrack
  * @property {number} id - The unique identifier for the current track.
  * @property {Blob} artwork - A data blob representing the artwork of the current track.
@@ -37,7 +55,7 @@ export async function isMusicAppRunning() {
 /**
  * Fetches the currently playing track in Music.app
  *
- * @returns {Promise<CurrentTrack | null>} A promise that retrieves the currently playing music track, if available
+ * @returns {Promise<CurrentTrack | null>} A promise that returns the currently playing music track, if available
  */
 export async function getCurrentTrack() {
   try {
@@ -70,6 +88,39 @@ export async function getCurrentTrack() {
     }
 
     return null;
+  } catch (err) {
+    logger.error(err);
+    throw err;
+  }
+}
+
+/**
+ * Fetches all playlists from Music.app.
+ *
+ * @returns {Promise<Array>}
+ */
+export async function getPlaylists() {
+  try {
+    if (isMusicAppRunning()) {
+      const result = await run(() => {
+        const Music = Application('Music');
+
+        const playlists = Music.playlists();
+
+        return playlists.map((p) => {
+          const tracks = p.tracks();
+
+          return {
+            name: p.name(),
+            tracks,
+          };
+        });
+      });
+
+      return result;
+    }
+
+    return [];
   } catch (err) {
     logger.error(err);
     throw err;

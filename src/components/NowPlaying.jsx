@@ -2,6 +2,7 @@ import { Box, Text } from 'ink';
 import React, { useEffect, useState } from 'react';
 
 import { getCurrentTrack } from '../lib/jxa';
+import ProgressBar from './ProgressBar';
 
 export default function NowPlaying() {
   const [currentTrack, setCurrentTrack] = useState(null);
@@ -11,7 +12,7 @@ export default function NowPlaying() {
       const trackInfo = await getCurrentTrack();
 
       setCurrentTrack(() => trackInfo);
-    }, 100);
+    }, 500);
 
     return () => {
       clearInterval(timer);
@@ -20,28 +21,36 @@ export default function NowPlaying() {
 
   return (
     <Box
-      borderStyle="round"
-      height={8}
       width="100%"
-      justifyContent="space-around"
+      justifyContent="space-between"
       alignItems="center"
-      padding={1}
+      flexDirection="column"
+      rowGap={1}
+      height={5}
     >
       {currentTrack ? (
         <Box flexDirection="column" alignItems="center">
-          <Text color="blueBright" wrap="truncate-end">
+          <Text wrap="truncate-end" bold>
             {currentTrack.title}
           </Text>
           <Text color="yellow" wrap="truncate-end">
             {currentTrack.artist}
           </Text>
-          <Text color="blue" wrap="truncate-end">
+          <Text color="blueBright" wrap="truncate-end">
             {currentTrack.album}
           </Text>
         </Box>
       ) : (
         <Text>Nothing is playing...</Text>
       )}
+      <ProgressBar
+        percent={
+          currentTrack
+            ? (currentTrack.position / currentTrack.duration) * 100
+            : 0
+        }
+        isPlaying={!!currentTrack}
+      />
     </Box>
   );
 }
