@@ -1,63 +1,29 @@
-import { Box, Text, useFocus, useInput } from 'ink';
-import PropTypes from 'prop-types';
+import { Box, useFocus } from 'ink';
 import React from 'react';
 
-export default function PlaylistSidebar({
-  playlists,
-  selectedIndex,
-  setSelectedIndex,
-}) {
-  const { isFocused } = useFocus();
+import { useMusicContext } from '../context/MusicContext';
+import ScrollingList from './ScrollingList';
 
-  useInput((input, key) => {
-    if (!isFocused) return;
+export default function PlaylistSidebar() {
+  const { playlists, selectedPlaylistIndex, setSelectedPlaylistIndex } =
+    useMusicContext();
 
-    if (key.downArrow && selectedIndex < playlists.length - 1) {
-      setSelectedIndex((prev) => prev + 1);
-    }
-    if (key.upArrow && selectedIndex > 0) {
-      setSelectedIndex((prev) => prev - 1);
-    }
+  const { isFocused } = useFocus({
+    autoFocus: true,
   });
 
   return (
     <Box
       borderStyle="round"
-      width="25%"
+      width="50%"
       borderColor={isFocused && 'blueBright'}
     >
-      <Box flexDirection="column" paddingLeft={1}>
-        {playlists?.map((plist) => (
-          <ListItem
-            key={plist.name}
-            label={plist.name}
-            isFocused={playlists[selectedIndex] === plist}
-          />
-        ))}
-      </Box>
+      <ScrollingList
+        isActive={isFocused}
+        items={playlists.map((plist) => plist.name)}
+        selectedIndex={selectedPlaylistIndex}
+        setSelectedIndex={setSelectedPlaylistIndex}
+      />
     </Box>
   );
 }
-
-PlaylistSidebar.propTypes = {
-  playlists: PropTypes.array.isRequired,
-  selectedIndex: PropTypes.number.isRequired,
-  setSelectedIndex: PropTypes.func.isRequired,
-};
-
-function ListItem({ label, isFocused }) {
-  return (
-    <Text
-      wrap="truncate-end"
-      bold={isFocused}
-      color={isFocused && 'blueBright'}
-    >
-      {isFocused ? '>' : '•'} {label}
-    </Text>
-  );
-}
-
-ListItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  isFocused: PropTypes.bool.isRequired,
-};

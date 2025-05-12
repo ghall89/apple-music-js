@@ -2,7 +2,21 @@ import { Text, useStdout } from 'ink';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-export default function ProgressBar({ percent, isPlaying }) {
+/**
+ * The progress bar props.
+ *
+ * @typedef {object} Props
+ * @property {number} percentage - The percentage of the progress bar that should be filled.
+ * @property {bool} isActive - Whether the progrss bar is active.
+ */
+
+/**
+ * Progress bar component.
+ *
+ * @type {React.FC<Props>}
+ * @returns {React.ReactElement} The progress bar.
+ */
+export default function ProgressBar({ percent, isActive }) {
   const { stdout } = useStdout();
 
   const progress = useMemo(() => {
@@ -23,7 +37,7 @@ export default function ProgressBar({ percent, isPlaying }) {
   }, [stdout.width, percent]);
 
   return (
-    <Text color="cyan" dimColor={!isPlaying}>
+    <Text color="cyan" dimColor={!isActive}>
       {progress}
     </Text>
   );
@@ -31,5 +45,9 @@ export default function ProgressBar({ percent, isPlaying }) {
 
 ProgressBar.propTypes = {
   percent: PropTypes.number.isRequired,
-  isPlaying: PropTypes.bool.isRequired,
+  isActive: PropTypes.bool,
+};
+
+ProgressBar.defaultProps = {
+  isActive: true,
 };

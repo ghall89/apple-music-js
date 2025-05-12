@@ -1,23 +1,11 @@
 import { Box, Text } from 'ink';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import { getCurrentTrack } from '../lib/jxa';
+import { useNowPlayingContext } from '../context/NowPlayingContext';
 import ProgressBar from './ProgressBar';
 
 export default function NowPlaying() {
-  const [currentTrack, setCurrentTrack] = useState(null);
-
-  useEffect(() => {
-    const timer = setInterval(async () => {
-      const trackInfo = await getCurrentTrack();
-
-      setCurrentTrack(() => trackInfo);
-    }, 500);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  const { currentTrack } = useNowPlayingContext();
 
   return (
     <Box
@@ -46,7 +34,7 @@ export default function NowPlaying() {
       <ProgressBar
         percent={
           currentTrack
-            ? (currentTrack.position / currentTrack.duration) * 100
+            ? (currentTrack.playerPosition / currentTrack.duration) * 100
             : 0
         }
         isPlaying={!!currentTrack}

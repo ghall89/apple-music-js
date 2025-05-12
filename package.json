@@ -3,7 +3,8 @@
   "module": "src/app.jsx",
   "type": "module",
   "scripts": {
-    "dev": "bun run src/main",
+    "dev": "DEV=true bun run src/main",
+    "dev-tools": "bunx react-devtools",
     "build": "bun build ./src/main.js --outdir ./out --watch"
   },
   "devDependencies": {
@@ -19,11 +20,11 @@
     "prettier": "^3.5.3"
   },
   "dependencies": {
-    "@jxa/run": "^1.4.0",
     "ink": "^5.2.1",
     "pino": "^9.6.0",
-    "pino-pretty": "^13.0.0",
     "prop-types": "^15.8.1",
-    "react": "^18"
+    "react": "^18",
+    "react-devtools-core": "^6.1.2",
+    "tunes-js": "^0.1.0"
   }
 }

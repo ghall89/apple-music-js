@@ -1,48 +1,48 @@
-import { Box, useInput, useStdout } from 'ink';
-import React, { useEffect, useState } from 'react';
+import { Box, useFocusManager, useInput, useStdout } from 'ink';
+import React from 'react';
 
 import NowPlaying from './components/NowPlaying';
 import PlaylistSidebar from './components/PlaylistSidebar';
 import StatusBar from './components/StatusBar';
-import { getPlaylists } from './lib/jxa';
+import Tracklist from './components/Tracklist';
+import { MusicProvider } from './context/MusicContext';
+import { NowPlayingProvider } from './context/NowPlayingContext';
 
 export default function App() {
   const { stdout } = useStdout();
-
-  const [playlists, setPlaylists] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  useEffect(async () => {
-    const playlistInfo = await getPlaylists();
-
-    setPlaylists(() => playlistInfo);
-  }, []);
+  const { focusNext, focusPrevious } = useFocusManager();
 
   useInput((input, key) => {
     if ((key.ctrl && input === 'q') || key.escape) {
       process.exit();
     }
+    if (key.rightArrow) {
+      focusNext();
+    }
+    if (key.leftArrow) {
+      focusPrevious();
+    }
   });
 
   return (
-    <Box
-      justifyContent="center"
-      alignItems="flex-start"
-      flexDirection="column"
-      height={stdout.rows}
-    >
-      <Box borderStyle="round">
-        <NowPlaying />
-      </Box>
-      <Box height={stdout.rows - 9}>
-        <PlaylistSidebar
-          playlists={playlists}
-          selectedIndex={selectedIndex}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <Box borderStyle="round" width="75%"></Box>
-      </Box>
-      <StatusBar />
-    </Box>
+    <MusicProvider>
+      <NowPlayingProvider>
+        <Box
+          justifyContent="center"
+          alignItems="flex-start"
+          flexDirection="column"
+          height={stdout.rows}
+        >
+          <Box borderStyle="round">
+            <NowPlaying />
+          </Box>
+          <Box height={stdout.rows - 9}>
+            <PlaylistSidebar />
+            <Tracklist />
+          </Box>
+          <StatusBar />
+        </Box>
+      </NowPlayingProvider>
+    </MusicProvider>
   );
 }
